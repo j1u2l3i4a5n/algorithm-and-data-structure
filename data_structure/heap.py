@@ -95,15 +95,90 @@ class Binominal_heap:
             
         return str(chain)
     
+class Skew_heap:
+    def __init__(self):
+        self.null_path_len = 0
+        self.root = None
+        
+    def merge(self, other):
+        ptr_self = self.root
+        ptr_other = other.root
+        stack = []
+        if ptr_self ==  None:
+            last_ptr = True
+        else:
+            last_ptr = False
+
+        while ptr_self != None and ptr_other != None:
+            if ptr_self.value < ptr_other.value:
+                tmp = ptr_self.ptr[1]
+                ptr_self.ptr[1] = None
+                stack.append(ptr_self)
+                ptr_self = tmp
+                last_ptr = True
+                
+            else:
+                
+                tmp = ptr_other.ptr[1]
+                ptr_other.ptr[1] = None
+                stack.append(ptr_other)
+                ptr_other = tmp
+                last_ptr = False
+               
+        if last_ptr:
+            current = ptr_other
+        else:
+            current = ptr_self
+        
+        for i in range(len(stack)):
+            out = stack.pop()
+            out.ptr[1] = current
+            current = out
+            current.ptr[0], current.ptr[1] = current.ptr[1], current.ptr[0]
+            
+        self.root = current
+                
+        
+    def __repr__(self):
+        current = self.root
+        right_path = ''
+        while current != None:
+            right_path += '%d '%current.value
+            current = current.ptr[1]
+        return right_path
+            
+    def delete_minimum(self):
+        a = self.root.ptr[0]
+        b = self.root.ptr[1]
+        other = Skew_heap()
+        minimum = self.root.value
+        if b == None:
+            self.root = a
+            
+        elif a == None or (a.value < b.value):
+            self.root = a
+            other.root = b
+            
+        else:
+            self.root = b
+            other.root = a
+            
+        self.merge(other)
+
+        return minimum
+        
+    
 if __name__ == '__main__':
     data = [34,23,76,4,38,5,13,54,75,43,12,84,39,10]
-    heap = Binominal_heap()
+    heap = Skew_heap()
     for i in data:
-        heap.insert(i)
-        string = ''
-        for j in heap.chain:
-            string += ' ' + str(j.size)
+        heap2 = Skew_heap()
+        node = Node(i)
+        node.ptr = [None, None]
+        heap2.root = node
+        heap.merge(heap2)
 
     for i in range(len(data)):
         print(heap.delete_minimum())
+
     
