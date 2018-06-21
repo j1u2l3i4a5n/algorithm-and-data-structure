@@ -167,18 +167,36 @@ class Skew_heap:
 
         return minimum
         
+class Binary_heap:
+    def __init__(self):
+        self.list = []
+    
+    def balence(self):
+        for i in range(len(self.list)-1, -1, -1):
+            if self.list[i] < self.list[int(i / 2)]:
+                self.list[i], self.list[int(i / 2)] = self.list[int(i / 2)], self.list[i]
+        
+    def insert(self, value):
+        self.list.append(value)
+        self.balence()
+    
+    def delete_minimum(self):
+        self.list[0], self.list[-1] = self.list[-1], self.list[0]
+        value = self.list.pop()
+        self.balence()
+        return value
+    
+    def __repr__(self):
+        return str(self.list)
     
 if __name__ == '__main__':
     data = [34,23,76,4,38,5,13,54,75,43,12,84,39,10]
-    heap = Skew_heap()
+    heap = Binary_heap()
     for i in data:
-        heap2 = Skew_heap()
-        node = Node(i)
-        node.ptr = [None, None]
-        heap2.root = node
-        heap.merge(heap2)
+        heap.insert(i)
 
+    
     for i in range(len(data)):
         print(heap.delete_minimum())
-
+    
     
