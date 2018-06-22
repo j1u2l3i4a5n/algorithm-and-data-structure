@@ -189,14 +189,72 @@ class Binary_heap:
     def __repr__(self):
         return str(self.list)
     
+class Fibonacii_heap(Binominal_heap):
+    def __init__(self):
+        self.min = 0
+        self.chain = []
+        
+    def insert(self, value):
+        self.chain.append(Binominal_tree(Node(value)))
+        if value < self.chain[self.min].root.value:
+            self.min = len(self.chain) - 1
+        
+    def union(self, other):
+        if self.chain[self.min] > other.chain[other.min]:
+            self.min = len(self.chain) + other.min
+        self.chain += other.chain
+        
+    def delete_minimum(self):
+        minimum = self.chain[self.min].root
+        
+        for i in range(len(minimum.ptr)):
+            tmp = Binominal_tree(minimum.ptr[i])
+            tmp.size = i
+            
+            self.chain.append(tmp)
+        
+        del self.chain[self.min]
+        
+        bit_list = []
+        
+        while len(self.chain) != 0:
+            j = 0
+            tmp = self.chain.pop(0)
+            if len(bit_list) == 0:
+                bit_list.append(tmp)
+            else:
+                while j < len(bit_list):
+                    if tmp.size == bit_list[j].size:
+                        tmp.union(bit_list[j])
+                        self.chain.append(tmp)
+                        del bit_list[j]
+                        break
+                
+                    elif tmp.size < bit_list[j].size:
+                        bit_list.insert(j, tmp)
+                        break
+                    j += 1
+                else:
+                    bit_list.append(tmp)
+        
+        self.min = 0
+        self.chain = bit_list    
+        for i in range(1, len(self.chain)):
+            if self.chain[i].root.value < self.chain[self.min].root.value:
+                self.min = i
+        return minimum.value
+    
+    def __repr__(self):
+        return str(self.chain)
+    
+    
 if __name__ == '__main__':
     data = [34,23,76,4,38,5,13,54,75,43,12,84,39,10]
-    heap = Binary_heap()
+    heap = Fibonacii_heap()
     for i in data:
         heap.insert(i)
 
     
     for i in range(len(data)):
         print(heap.delete_minimum())
-    
     
