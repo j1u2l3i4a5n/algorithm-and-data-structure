@@ -124,7 +124,7 @@ class Splay_tree(Binary_search_tree):
         self.right_ptr = self.right_ptr.left                
         print('RL')
 
-    def splay(self, value, insert = False):
+    def splay(self, value, function = 'insert'):
         self.last_ptr = None
         self.ptr = self.root
         self.splay_left = Node(None)
@@ -151,8 +151,14 @@ class Splay_tree(Binary_search_tree):
                 self.right_ptr.left = self.ptr.right
                 self.ptr.left = self.splay_left.right
                 self.ptr.right = self.splay_right.left
-                self.root = self.ptr
-
+                if function == 'delete':
+                    node = Node(self.last_ptr.value)
+                    del self.last_ptr
+                else:
+                    node = self.ptr
+                self.root = node
+                self.root.left = self.splay_left.right
+                self.root.right = self.splay_right.left  
                 return True
             
             elif value > self.ptr.value:
@@ -195,7 +201,7 @@ class Splay_tree(Binary_search_tree):
                 self.right_ptr.left = self.ptr.right
             except:
                 pass
-            if insert:
+            if function == 'insert':
                 node = Node(value)
             else:
                 node = Node(self.last_ptr.value)
