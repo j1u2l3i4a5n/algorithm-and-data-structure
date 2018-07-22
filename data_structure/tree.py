@@ -45,7 +45,10 @@ class Binary_search_tree:
             elif self.way == 'left':
                 self.last_ptr.left = node
 
-    
+    def delete(self,value):
+        if self.find(value):
+            del self.ptr
+            
     def find(self, value):
         self.last_ptr = None
         self.ptr = self.root
@@ -96,7 +99,6 @@ class Splay_tree(Binary_search_tree):
         self.path[1].left = None
         self.right_ptr.left = self.path[1]
         self.right_ptr = self.right_ptr.left
-        print('LL')
         
     def RR_rotate(self):
         self.path[0].right = self.path[1].left
@@ -104,7 +106,6 @@ class Splay_tree(Binary_search_tree):
         self.path[1].right = None
         self.left_ptr.right = self.path[1]
         self.left_ptr = self.left_ptr.right
-        print('RR')
         
     def LR_rotate(self):
         self.left_ptr.right = self.path[1]                  
@@ -113,7 +114,6 @@ class Splay_tree(Binary_search_tree):
         self.path[1].right = None
         self.left_ptr = self.left_ptr.right
         self.right_ptr = self.right_ptr.left
-        print('LR')
         
     def RL_rotate(self):
         self.right_ptr.left = self.path[1]   
@@ -122,8 +122,13 @@ class Splay_tree(Binary_search_tree):
         self.path[0].right = None
         self.left_ptr = self.left_ptr.right
         self.right_ptr = self.right_ptr.left                
-        print('RL')
 
+    def insert(self, value):
+        self.splay(value, function='insert')
+        
+    def deletion(self, value):
+        self.splay(value, function='delete')
+        
     def splay(self, value, function = 'insert'):
         self.last_ptr = None
         self.ptr = self.root
@@ -209,7 +214,6 @@ class Splay_tree(Binary_search_tree):
             self.root = node
             self.root.left = self.splay_left.right
             self.root.right = self.splay_right.left                
-            print(self.root)  
             return False
               
     def __repr__(self):
@@ -217,14 +221,11 @@ class Splay_tree(Binary_search_tree):
         
         
 if __name__ == '__main__':
-    data = [43,122,4,64,34,1,76,5,76,36,95,23,42,44,86,56,26]
+    
+    data = []
+    for i in range(1000):
+        data.append(i)
     search_tree = Splay_tree()
     
     for i in data:
         search_tree.insert(i)
-        
-    
-    a = [1,3,4,5,6,7,923,43]
-    for i in a:
-        print(search_tree.find(i))
-    
